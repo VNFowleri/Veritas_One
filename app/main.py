@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from app.routers import patient
+from app.routers import fhir  # Import the new router
 
 app = FastAPI()
 
-# Include the patient router
-app.include_router(patient.router)
+# ✅ Register Routers
+app.include_router(fhir.router)
 
 @app.get("/")
 def health_check():

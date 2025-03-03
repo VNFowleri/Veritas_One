@@ -1,5 +1,23 @@
 Command	Purpose
 git remote -v	   Check if a remote exists
-git remote add origin      git@github.com:YOUR_USERNAME/Veritas_One.git	Add the remote
-git push -u      origin main	Push code to GitHub
+git remote add origin      git@github.com:YOUR_USERNAME/Veritas_One.git	     Add the remote
+git push -u      origin main	    Push code to GitHub
 
+git pull origin main --rebase	Syncs remote changes before pushing
+git push -u origin main	     Pushes after syncing
+
+Client ID:
+5d1d9dd6-c34e-4403-be88-2b2a85ebd297
+5d1d9dd6-c34e-4403-be88-2b2a85ebd297
+b50178c4-d83b-4543-8ac8-64371644d8ed
+
+git add .
+git commit -m "Auto-commit: $(date +'%Y-%m-%d %H:%M:%S')"
+git push origin main
+
+To run Backend: uvicorn backend_v2:app --reload
+
+Erno 48 already in use:
+1) lsof -i :8000
+2) kill -9 <PID> (enter PID from output from first step)
+3)uvicorn backend_v2:app --reload

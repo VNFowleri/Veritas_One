@@ -1,5 +1,5 @@
-fastapi
+fastapi~=0.115.11
 uvicorn
-sqlalchemy
+sqlalchemy~=2.0.38
 pg8000
-requests
+requests~=2.32.3
