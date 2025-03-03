@@ -1,0 +1,5 @@
+Command	Purpose
+git remote -v	   Check if a remote exists
+git remote add origin      git@github.com:YOUR_USERNAME/Veritas_One.git	Add the remote
+git push -u      origin main	Push code to GitHub
+
