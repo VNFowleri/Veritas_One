@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Veritas_One.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BTG_Instructions" beforeDir="false" afterPath="$PROJECT_DIR$/BTG_Instructions" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routers/patient.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +73,7 @@
       <workItem from="1740616917577" duration="784000" />
       <workItem from="1740775562250" duration="3994000" />
       <workItem from="1741034063785" duration="6043000" />
-      <workItem from="1741040125902" duration="3255000" />
+      <workItem from="1741040125902" duration="4916000" />
     </task>
     <servers />
   </component>

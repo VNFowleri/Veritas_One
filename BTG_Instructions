@@ -21,3 +21,9 @@ Erno 48 already in use:
 1) lsof -i :8000
 2) kill -9 <PID> (enter PID from output from first step)
 3)uvicorn backend_v2:app --reload
+
+Deploy to Railway:
+git add .
+git commit -m "FastAPI running successfully"
+git push origin main
+railway up

@@ -1,30 +1,64 @@
 import os
+import jwt  # PyJWT for signing JWTs
 import requests
+import datetime
 from fastapi import APIRouter, HTTPException
 
-# 🔹 Epic FHIR Sandbox Credentials
-FHIR_BASE_URL = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
+router = APIRouter(prefix="/fhir", tags=["Epic FHIR API"])
+
 TOKEN_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
-CLIENT_ID = os.getenv("FHIR_CLIENT_ID", "your-client-id")  # Ensure it is set in env vars
+FHIR_BASE_URL = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
+CLIENT_ID = os.getenv("FHIR_CLIENT_ID")
+PRIVATE_KEY_PATH = "private_key.pem"  # Make sure this exists!
 
-router = APIRouter(prefix="/fhir/patient", tags=["FHIR Patient"])
+def generate_jwt():
+    """
+    Creates a signed JWT for Epic OAuth authentication.
+    """
+    now = datetime.datetime.utcnow()
+    payload = {
+        "iss": CLIENT_ID,  # The app's client ID
+        "sub": CLIENT_ID,  # The same client ID for Epic
+        "aud": TOKEN_URL,  # Epic token endpoint
+        "jti": "unique-jwt-id",  # Generate a unique JWT ID per request
+        "exp": now + datetime.timedelta(minutes=5),  # Expiry in 5 minutes
+        "iat": now,
+        "nbf": now
+    }
 
-# 🔹 OAuth2 Token Request
+    # Load Private Key
+    with open(PRIVATE_KEY_PATH, "r") as key_file:
+        private_key = key_file.read()
+
+    # Sign JWT using RS256
+    signed_jwt = jwt.encode(payload, private_key, algorithm="RS256")
+
+    return signed_jwt
+
 def get_access_token():
+    """
+    Requests an OAuth access token from Epic using JWT authentication.
+    """
+    jwt_token = generate_jwt()
+
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    payload = {"grant_type": "client_credentials", "client_id": CLIENT_ID}
+    payload = {
+        "grant_type": "client_credentials",
+        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "client_assertion": jwt_token,
+    }
 
     response = requests.post(TOKEN_URL, headers=headers, data=payload)
 
-    print("🔹 OAuth Response Status:", response.status_code)
-    print("🔹 OAuth Response Body:", response.text)
+    print("🔹 Epic OAuth Response:", response.status_code, response.text)
 
     if response.status_code == 200:
         return response.json().get("access_token")
 
     raise HTTPException(status_code=response.status_code, detail=f"Failed to obtain access token: {response.text}")
 
-# 🔹 Fetch Patient Data from Epic's FHIR Sandbox
+# Fetch Patient Data from Epic
+@router.get("/patient/{patient_id}")
 def fetch_patient_data(patient_id: str):
     access_token = get_access_token()
     headers = {"Authorization": f"Bearer {access_token}"}
@@ -38,12 +72,3 @@ def fetch_patient_data(patient_id: str):
         return response.json()
 
     raise HTTPException(status_code=response.status_code, detail=f"Failed to fetch patient data: {response.text}")
-
-# 🔹 FastAPI Endpoints
-@router.get("/{patient_id}")
-def get_fhir_patient(patient_id: str):
-    return fetch_patient_data(patient_id)
-
-@router.get("/")
-def get_default_patient():
-    return fetch_patient_data("erXuFYUfucBZaryVksYEcMg3")  # Default test patient
