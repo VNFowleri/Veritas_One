@@ -6,13 +6,17 @@ git push -u      origin main	    Push code to GitHub
 git pull origin main --rebase	Syncs remote changes before pushing
 git push -u origin main	     Pushes after syncing
 
-Client ID:
+New ClientID 3/4/25:
+- 782e3471-0703-4e94-aada-5d83aada6c52
+- production: d2df0d17-5aec-43c8-a5d4-e1d90d8d5c4d
+
+Old Client ID:
 5d1d9dd6-c34e-4403-be88-2b2a85ebd297
 5d1d9dd6-c34e-4403-be88-2b2a85ebd297
 b50178c4-d83b-4543-8ac8-64371644d8ed
 
 git add .
-git commit -m "Auto-commit: $(date +'%Y-%m-%d %H:%M:%S')"
+git commit -m "Update"
 git push origin main
 
 To run Backend: uvicorn backend_v2:app --reload
