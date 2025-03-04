@@ -3,3 +3,4 @@ uvicorn
 sqlalchemy~=2.0.38
 pg8000
 requests~=2.32.3
+PyJWT
