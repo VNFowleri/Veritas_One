@@ -28,6 +28,6 @@ Erno 48 already in use:
 
 Deploy to Railway:
 git add .
-git commit -m "FastAPI running successfully"
+git commit -m "update and railway up"
 git push origin main
 railway up
