@@ -21,38 +21,33 @@ PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH", "private_key.pem")
 JWT_ALGORITHM = "RS256"  # Epic requires RS256 for static public key auth
 JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", 5))
 
-
 def generate_jwt():
-    """
-    Creates a signed JWT for Epic OAuth authentication.
-    """
-    now = int(time.time())  # ✅ Use UNIX timestamp format
+    now = int(time.time())
 
     payload = {
-        "iss": FHIR_CLIENT_ID,  # Epic App Client ID
-        "sub": FHIR_CLIENT_ID,  # Must be the same as "iss"
-        "aud": TOKEN_URL,  # Epic token endpoint
-        "jti": str(uuid.uuid4()),  # ✅ Use a valid UUID
-        "exp": now + JWT_EXPIRATION_MINUTES * 60,  # ✅ Future expiration time
+        "iss": FHIR_CLIENT_ID,
+        "sub": FHIR_CLIENT_ID,
+        "aud": TOKEN_URL,
+        "jti": str(uuid.uuid4()),
+        "exp": now + JWT_EXPIRATION_MINUTES * 60,
         "iat": now,
         "nbf": now
     }
 
-    # ✅ Load Private Key before encoding
     try:
         with open(PRIVATE_KEY_PATH, "r") as key_file:
             private_key = key_file.read()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to load private key: {str(e)}")
 
-    # ✅ Sign JWT using RS256
     try:
+        # 🔹 Ensure Base64URL encoding by using PyJWT properly
         signed_jwt = jwt.encode(payload, private_key, algorithm=JWT_ALGORITHM)
-        print("🔹 Generated JWT:", signed_jwt)  # ✅ Debugging
+
+        print("🔹 Generated JWT:", signed_jwt)  # Debugging
         return signed_jwt
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"JWT signing failed: {str(e)}")
-
 
 def get_access_token():
     """
