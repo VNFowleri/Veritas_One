@@ -1,8 +1,9 @@
 import os
-import time
 import jwt  # PyJWT for signing JWTs
 import requests
+import datetime
 import uuid
+import jwt  # PyJWT for signing
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 
@@ -16,43 +17,38 @@ FHIR_CLIENT_ID = os.getenv("FHIR_CLIENT_ID")
 TOKEN_URL = os.getenv("FHIR_TOKEN_URL", "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token")
 FHIR_API_URL = os.getenv("FHIR_API_URL", "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4")
 PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH", "private_key.pem")
-
-# ✅ Enforce RS256 for JWT signing
-JWT_ALGORITHM = "RS256"  # Epic requires RS256 for static public key auth
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "RS256")
 JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", 5))
-
 
 def generate_jwt():
     """
     Creates a signed JWT for Epic OAuth authentication.
     """
-    now = int(time.time())  # ✅ Use UNIX timestamp format
-
+    now = datetime.datetime.utcnow()
     payload = {
         "iss": FHIR_CLIENT_ID,  # Epic App Client ID
         "sub": FHIR_CLIENT_ID,  # Must be the same as "iss"
         "aud": TOKEN_URL,  # Epic token endpoint
-        "jti": str(uuid.uuid4()),  # ✅ Use a valid UUID
-        "exp": now + JWT_EXPIRATION_MINUTES * 60,  # ✅ Future expiration time
+        "jti": os.urandom(16).hex(),  # Generate a unique JWT ID
+        "exp": now + datetime.timedelta(minutes=JWT_EXPIRATION_MINUTES),
         "iat": now,
         "nbf": now
     }
+    # 🔹 Explicitly Use RS256 for Signing
+    jwt_token = jwt.encode(payload, private_key, algorithm="RS256")
 
-    # ✅ Load Private Key before encoding
-    try:
-        with open(PRIVATE_KEY_PATH, "r") as key_file:
-            private_key = key_file.read()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to load private key: {str(e)}")
+    return jwt_token
+
+    # ✅ Load Private Key
+    with open(PRIVATE_KEY_PATH, "r") as key_file:
+        private_key = key_file.read()
 
     # ✅ Sign JWT using RS256
-    try:
-        signed_jwt = jwt.encode(payload, private_key, algorithm=JWT_ALGORITHM)
-        print("🔹 Generated JWT:", signed_jwt)  # ✅ Debugging
-        return signed_jwt
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"JWT signing failed: {str(e)}")
+    signed_jwt = jwt.encode(payload, private_key, algorithm=JWT_ALGORITHM)
 
+    print("🔹 Generated JWT:", signed_jwt)  # ✅ Debugging
+
+    return signed_jwt
 
 def get_access_token():
     """
@@ -77,13 +73,7 @@ def get_access_token():
     if response.status_code == 200:
         return response.json().get("access_token")
 
-    elif response.status_code == 429:
-        raise HTTPException(
-            status_code=429, detail="Epic API rate limit exceeded. Try again later."
-        )
-
     raise HTTPException(status_code=response.status_code, detail=f"Failed to obtain access token: {response.text}")
-
 
 @router.get("/patient/{patient_id}")
 def fetch_patient_data(patient_id: str):

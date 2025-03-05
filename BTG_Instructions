@@ -31,3 +31,39 @@ git add .
 git commit -m "update and railway up"
 git push origin main
 railway up
+
+Generating Private Key:
+openssl req -new -key private_key.pem -out certificate.csr
+
+Generating Public Key:
+openssl x509 -req -days 365 -in certificate.csr -signkey private_key.pem -out public_cert.pem
+
+Public_key_cert.pem (public key):
+MIID5zCCAs+gAwIBAgIUCFGjrFbc+Kfpe+YpwZJpgTh/S90wDQYJKoZIhvcNAQEL
+BQAwgZsxCzAJBgNVBAYTAlVTMRYwFAYDVQQIDA1NYXNzYWNodXNldHRzMQ8wDQYD
+VQQHDAZCb3N0b24xFzAVBgNVBAoMDkJURyBDb25zdWx0aW5nMRAwDgYDVQQLDAdJ
+VCBEZXB0MRQwEgYDVQQDDAtWZXJpdGFzIE9uZTEiMCAGCSqGSIb3DQEJARYTYnRn
+YXN0b24xQGdtYWlsLmNvbTAeFw0yNTAzMDUwODIzMjJaFw0yNjAzMDUwODIzMjJa
+MIGbMQswCQYDVQQGEwJVUzEWMBQGA1UECAwNTWFzc2FjaHVzZXR0czEPMA0GA1UE
+BwwGQm9zdG9uMRcwFQYDVQQKDA5CVEcgQ29uc3VsdGluZzEQMA4GA1UECwwHSVQg
+RGVwdDEUMBIGA1UEAwwLVmVyaXRhcyBPbmUxIjAgBgkqhkiG9w0BCQEWE2J0Z2Fz
+dG9uMUBnbWFpbC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDK
+CkJ1t63i17RGvLoz0dsJP8mb+97/3ZiR+8bm6KXl0nxUtVzJ5MEriqD3Z0h4rMSD
+rTwke4Nmxn4HD5Y43lwP398jC+MMUfGBkXENlS0lwqJUbE40//CbCOvtfl1XNmob
+4CCmp0y8ZZvfMO9nrwJwllb20TMvoN3O4yRcAg7r/AR4xrrzJQ96CCv8garR2eoZ
+QZW6z36nwBNWxG17y3QJtV+58FR8D6Js8Z6MDGeu+CyPvZbXm/Y1SfMbLPuUj9Sw
+T+l/tbptpge5HNxSanhQTyC3Mg6bwjjWfbCoDO34HZU0eFdHdQJCPvEtA8Bu+oLM
+qiGJ95kwQmlUz/i6A79tAgMBAAGjITAfMB0GA1UdDgQWBBSaaRAK/G3U2PfDltk8
+mWsOHCt7xjANBgkqhkiG9w0BAQsFAAOCAQEApwwiLG2JeowrWObBoyFyTHYDs7iw
+0o+OnbL7F9Tkn1iJOI0Eo7m7BxTwEfdAb77QjvZ/rj0I+80t7A1wLshfmWChGGy0
+jJj7boIbec8Z3OGrs6JpSju5Q8hndatA2Ken1Xd2uEqDae5BG/YFw+Z8ZzJHB4RN
+CL2P2yX68JKRXdCUxChgSzEpSUKXD/ID/l7PY3FMi8I7qTPUMvS2ApvgkhcAII6h
+8z95nHq8cr/McwDanZe/2ISBu2JxFfFHqOLeVLCwjO+C97Zl4+RwBXeNrGPrd1Sc
+VL+z9HaeHIo8HDAYa5KwuAIsVz4LU5YR3vI7TDzQlhJAcuPss1O+Ymhj4Q==
+
+Testing Epic JWT:
+curl -X POST "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "grant_type=client_credentials" \
+     -d "client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer" \
+     -d "client_assertion=$(python3 -c 'from app.routers import fhir; print(fhir.generate_jwt())')"
