@@ -19,35 +19,39 @@ PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH", "private_key.pem")
 
 # ✅ Enforce RS256 for JWT signing
 JWT_ALGORITHM = "RS256"  # Epic requires RS256 for static public key auth
-JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", 5))
+JWT_EXPIRATION_MINUTES = min(int(os.getenv("JWT_EXPIRATION_MINUTES", 5)), 5)  # Ensure max 5 mins
+
 
 def generate_jwt():
+    """
+    Generate a valid JWT for Epic authentication.
+    """
     now = int(time.time())
 
     payload = {
         "iss": FHIR_CLIENT_ID,
         "sub": FHIR_CLIENT_ID,
         "aud": TOKEN_URL,
-        "jti": str(uuid.uuid4()),
-        "exp": now + JWT_EXPIRATION_MINUTES * 60,
+        "jti": str(uuid.uuid4()),  # Unique token ID
+        "exp": now + JWT_EXPIRATION_MINUTES * 60,  # Expiration (≤5 mins)
         "iat": now,
         "nbf": now
     }
 
+    # Load Private Key
     try:
         with open(PRIVATE_KEY_PATH, "r") as key_file:
             private_key = key_file.read()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to load private key: {str(e)}")
+        raise Exception(f"Failed to load private key: {str(e)}")
 
     try:
-        # 🔹 Ensure Base64URL encoding by using PyJWT properly
+        # Sign JWT using RS256
         signed_jwt = jwt.encode(payload, private_key, algorithm=JWT_ALGORITHM)
-
-        print("🔹 Generated JWT:", signed_jwt)  # Debugging
-        return signed_jwt
+        return signed_jwt.strip()  # Ensure it's clean with no whitespace
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"JWT signing failed: {str(e)}")
+        raise Exception(f"JWT signing failed: {str(e)}")
+
 
 def get_access_token():
     """
@@ -55,7 +59,9 @@ def get_access_token():
     """
     jwt_token = generate_jwt()
 
-    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
     payload = {
         "grant_type": "client_credentials",
         "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
@@ -97,3 +103,7 @@ def fetch_patient_data(patient_id: str):
         return response.json()
 
     raise HTTPException(status_code=response.status_code, detail=f"Failed to fetch patient data: {response.text}")
+
+
+if __name__ == "__main__":
+    print(generate_jwt())  # ✅ Only prints once when running the script
