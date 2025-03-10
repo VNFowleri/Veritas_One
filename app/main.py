@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from app.routers import fhir  # Import the new router
+from app.routers import fax
 
 app = FastAPI()
 
-# ✅ Register Routers
-app.include_router(fhir.router)
+# Include the fax router
+app.include_router(fax.router)
 
 @app.get("/")
-def health_check():
-    return {"message": "✅ FastAPI server is running!"}
+def root():
+    return {"message": "Veritas One API is running!"}
