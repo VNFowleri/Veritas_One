@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routers/fax.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routers/fax.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/twilio_fax.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/twilio_fax.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,6 +89,7 @@
       <workItem from="1741336152222" duration="102000" />
       <workItem from="1741375473179" duration="5785000" />
       <workItem from="1741452598155" duration="28787000" />
+      <workItem from="1741656572375" duration="2662000" />
     </task>
     <servers />
   </component>

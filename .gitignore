@@ -1,0 +1,30 @@
+# -----------------------------
+# Python cache/compiled files
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# -----------------------------
+# Virtual environment
+# -----------------------------
+venv/
+.env
+
+# -----------------------------
+# Key and Certificate files
+# -----------------------------
+*.pem
+*.csr
+*.crt
+*.key
+
+# If you have a folder holding secrets, ignore it entirely:
+# secrets/
+
+# -----------------------------
+# Other logs or temp files
+# -----------------------------
+*.log
+*.tmp
