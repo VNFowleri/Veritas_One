@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/certificate.csr" beforeDir="false" afterPath="$PROJECT_DIR$/certificate.csr" afterDir="false" />
-    </list>
+    <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,7 +89,7 @@
       <workItem from="1741452598155" duration="28787000" />
       <workItem from="1741656572375" duration="2662000" />
       <workItem from="1741743698462" duration="3058000" />
-      <workItem from="1741933122784" duration="302000" />
+      <workItem from="1741933122784" duration="701000" />
     </task>
     <servers />
   </component>
