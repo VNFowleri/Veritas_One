@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BTG_Instructions" beforeDir="false" afterPath="$PROJECT_DIR$/BTG_Instructions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routers/ifax.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routers/ifax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/ifax_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/ifax_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/ocr.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/ocr.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +97,7 @@
       <workItem from="1741452598155" duration="28787000" />
       <workItem from="1741656572375" duration="2662000" />
       <workItem from="1741743698462" duration="3058000" />
-      <workItem from="1741933122784" duration="2193000" />
+      <workItem from="1741933122784" duration="5979000" />
     </task>
     <servers />
   </component>

@@ -1,36 +1,69 @@
-from fastapi import APIRouter, Query, HTTPException
 import requests
 import os
+import logging
 
-router = APIRouter(prefix="/ifax", tags=["iFax Integration"])
+logger = logging.getLogger(__name__)
 
-# iFax API Key (make sure to set this in your environment)
 IFAX_API_KEY = os.getenv("IFAX_API_KEY")
 
-@router.post("/send")
-def send_fax(fax_number: str = Query(..., description="Recipient Fax Number"), file_path: str = Query(..., description="Path to PDF")):
-    """
-    Sends a fax using the iFax API.
-    """
-    if not IFAX_API_KEY:
-        raise HTTPException(status_code=500, detail="iFax API key is missing. Set IFAX_API_KEY in your environment.")
 
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=400, detail=f"File does not exist: {file_path}")
-
-    url = "https://api.ifaxapp.com/send-fax"
+def fetch_received_faxes(number_id: str, order_id: str, start_date: str, end_date: str):
+    """
+    Fetches a list of received faxes from iFax API.
+    """
+    url = "https://api.ifaxapp.com/v1/customer/inbound/fax-list"
     headers = {
-        "Authorization": f"Bearer {IFAX_API_KEY}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "accessToken": IFAX_API_KEY
     }
     payload = {
-        "fax_number": fax_number,
-        "file_url": f"http://your-server-url/{file_path}"  # Replace with actual accessible URL
+        "numberId": number_id,
+        "orderId": order_id,
+        "startDate": start_date,
+        "endDate": end_date
     }
 
     response = requests.post(url, json=payload, headers=headers)
 
     if response.status_code == 200:
-        return {"message": "Fax sent successfully", "fax_number": fax_number, "file": file_path}
+        return response.json()
     else:
-        return {"error": "Failed to send fax", "status": response.status_code, "response": response.text}
+        logger.error(f"Failed to fetch faxes: {response.text}")
+        return {"error": "Failed to fetch faxes", "status": response.status_code, "response": response.text}
+
+
+def download_fax(job_id: str, transaction_id: str):
+    """
+    Downloads a received fax from iFax API.
+    """
+    url = "https://api.ifaxapp.com/v1/customer/inbound/fax-download"
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "accessToken": IFAX_API_KEY
+    }
+    payload = {
+        "jobId": job_id,
+        "transactionId": transaction_id
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        pdf_data = data.get("data")
+
+        if pdf_data:
+            received_faxes_dir = os.path.join(os.getcwd(), "received_faxes")
+            os.makedirs(received_faxes_dir, exist_ok=True)
+
+            file_path = os.path.join(received_faxes_dir, f"{job_id}.pdf")
+            with open(file_path, "wb") as f:
+                f.write(bytes.fromhex(pdf_data))
+
+            logger.info(f"Fax {job_id} downloaded and saved at {file_path}")
+            return {"message": "Fax downloaded", "file_path": file_path}
+
+    logger.error(f"Failed to download fax: {response.text}")
+    return {"error": "Failed to download fax", "status": response.status_code}

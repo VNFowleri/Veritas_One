@@ -1,47 +1,73 @@
-import requests
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File, Form
 import os
+import shutil
 import logging
-from fastapi import APIRouter, Query, HTTPException
+from sqlalchemy.orm import Session
+from app.database.db import SessionLocal, FaxFile
+from app.utils.ocr import extract_text_from_pdf
+from datetime import datetime
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Define FastAPI router
+router = APIRouter(prefix="/ifax", tags=["iFax Integration"])
+
 logger = logging.getLogger(__name__)
 
-# iFax API details
-IFAX_API_URL = "https://api.ifaxapp.com/v1/fax/send"
-IFAX_ACCESS_TOKEN = os.getenv("IFAX_ACCESS_TOKEN")  # Set this in your environment variables
+# Database dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-router = APIRouter(prefix="/ifax", tags=["iFax"])
-
-@router.post("/send")
-async def send_fax(fax_number: str = Query(..., description="Recipient fax number"),
-                   file_path: str = Query(..., description="Path to the PDF file")):
+@router.post("/receive")
+async def receive_fax(
+    job_id: str = Form(...),
+    transaction_id: str = Form(...),
+    sender: str = Form(None),
+    receiver: str = Form(None),
+    received_time: str = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
     """
-    Sends a fax using the iFax API.
+    Webhook endpoint for iFax to send received faxes.
+    The fax file is uploaded as part of a multipart request.
     """
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=400, detail=f"File does not exist: {file_path}")
 
-    if not IFAX_ACCESS_TOKEN:
-        raise HTTPException(status_code=500, detail="iFax API access token is missing. Set IFAX_ACCESS_TOKEN.")
+    received_faxes_dir = os.path.join(os.getcwd(), "received_faxes")
+    os.makedirs(received_faxes_dir, exist_ok=True)
 
-    headers = {
-        "Authorization": f"Bearer {IFAX_ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
+    file_path = os.path.join(received_faxes_dir, f"{job_id}.pdf")
 
-    data = {
-        "recipient": fax_number
-    }
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        logger.info(f"Saved fax PDF: {file_path}")
+    except Exception as e:
+        logger.error(f"Error saving fax PDF: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save received fax.")
 
-    files = {
-        "file": open(file_path, "rb")
-    }
+    # Perform OCR
+    raw_text = extract_text_from_pdf(file_path)
 
-    response = requests.post(IFAX_API_URL, headers=headers, data=data, files=files)
+    # Store in database
+    fax_entry = FaxFile(
+        job_id=job_id,
+        transaction_id=transaction_id,
+        sender=sender,
+        receiver=receiver,
+        received_time=datetime.strptime(received_time, "%Y-%m-%d %H:%M:%S"),
+        file_path=file_path,
+        raw_text=raw_text,
+    )
 
-    if response.status_code == 200:
-        return response.json()
-    else:
-        logger.error(f"❌ Failed to send fax. Response: {response.text}")
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    try:
+        db.add(fax_entry)
+        db.commit()
+        db.refresh(fax_entry)
+    except Exception as e:
+        logger.error(f"Database error: {e}")
+        raise HTTPException(status_code=500, detail="Database error while saving fax.")
+
+    return {"message": "Fax received and stored", "job_id": job_id, "file_path": file_path}
