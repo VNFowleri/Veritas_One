@@ -1,5 +1,12 @@
 import streamlit as st
 import pandas as pd
+import sys, os
+
+# Add the project root to the PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Now your imports should work
+from app.routers import fax, ifax
 
 # Configure the Streamlit page
 st.set_page_config(page_title="Veritas One", layout="wide")
@@ -42,6 +49,8 @@ if selected_page == "Welcome":
         - **Avoid Duplicate Tests & Procedures:** Save time, money, and unnecessary treatments.
         - **Advance Medicine & Improve Patient Care (If You Choose To):** Help researchers discover new treatments and improve existing ones.
         - **Earn Money From Your Data (Only If You Opt In):** Receive a portion of the profits generated from your data.
+
+        At Veritas One, you own your health data, you control its use, and you benefit from it.
         """
     )
     with st.expander("How Your Health Data is Stored & Used"):
@@ -74,6 +83,26 @@ if selected_page == "Welcome":
             - Your data is already being monetized by others—unlike them, you control your identifiable data and decide whether to opt in for personalized opportunities.
             """
         )
+        # Define the table data for sharing options
+        table_data = {
+            "Sharing Option": [
+                "Strict Privacy Mode (No Sharing)",
+                "De-Identified Research Only",
+                "Full Data Sharing (Research + Ads)"
+            ],
+            "How Your Data is Used": [
+                "Your data is stored for your personal use only.",
+                "Your anonymous health data is used to improve medicine and public health.",
+                "Your de-identified data is used for research, AND if you opt in, limited identifiable data (such as medications) can be used for personalized health offers."
+            ],
+            "Compensation": [
+                "No compensation.",
+                "You receive 5% of research profits.",
+                "You receive 15% of total profits."
+            ]
+        }
+        df = pd.DataFrame(table_data)
+        st.table(df)
 
 # ----- About Us Page -----
 elif selected_page == "About Us":
@@ -115,8 +144,28 @@ elif selected_page == "Create Account":
                 "Strict Privacy Mode (No Sharing)",
                 "De-Identified Research Only (5% of research profits)",
                 "Full Data Sharing (Research + Ads) (15% of total profits)",
-            ),
+            )
         )
+        # Define the table data for sharing options
+        table_data = {
+            "Sharing Option": [
+                "Strict Privacy Mode (No Sharing)",
+                "De-Identified Research Only",
+                "Full Data Sharing (Research + Ads)"
+            ],
+            "How Your Data is Used": [
+                "Your data is stored for your personal use only.",
+                "Your anonymous health data is used to improve medicine and public health.",
+                "Your de-identified data is used for research, AND if you opt in, limited identifiable data (such as medications) can be used for personalized health offers."
+            ],
+            "Compensation": [
+                "No compensation.",
+                "You receive 5% of research profits.",
+                "You receive 15% of total profits."
+            ]
+        }
+        df = pd.DataFrame(table_data)
+        st.table(df)
         submitted = st.form_submit_button("Create Account")
         if submitted:
             st.success("Account created successfully!")
@@ -196,7 +245,6 @@ elif selected_page == "Settings & Privacy":
     )
     st.subheader("Compensation Overview")
     st.write("You have earned $50 from data sharing this month!")
-
 
 # ----- Notifications Panel -----
 elif selected_page == "Notifications":
