@@ -1,3 +1,15 @@
+# Startup
+source .env
+echo $DATABASE_URL
+echo $IFAX_ACCESS_TOKEN
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+ngrok http --domain=veritasone.ngrok.app 8000
+
+# Setting Startup Variables (3/21/25)
+set -a
+source .env
+set +a
+
 # Restart Virtual Env:
 deactivate
 source .venv/bin/activate  # Re-activate virtual environment
@@ -23,25 +35,26 @@ New ClientID 3/4/25:
 - 782e3471-0703-4e94-aada-5d83aada6c52
 - production: d2df0d17-5aec-43c8-a5d4-e1d90d8d5c4d
 
-To run Backend: uvicorn backend_v2:app --reload
+#To run Backend:
+uvicorn app.main:app --reload
 
-Erno 48 already in use:
+#Erno 48 already in use:
 1) lsof -i :8000
 2) kill -9 <PID> (enter PID from output from first step)
-3)uvicorn backend_v2:app --reload
+3) uvicorn app.main:app --reload
 
-Deploy to Railway:
+# Deploy to Railway:
 git add .
 git commit -m "update and railway up"
 git push origin main
 railway up
 
-Generating Private Key:
+# Generating Private Key:
 openssl req -new -key private_key.pem -out certificate.csr
 Generating Public Key:
 openssl x509 -req -days 365 -in certificate.csr -signkey private_key.pem -out public_cert.pem
 
-Testing Epic JWT:
+# Testing Epic JWT:
 curl -X POST "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token" \
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "grant_type=client_credentials" \
@@ -61,18 +74,17 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3ODJlMzQ3MS0wNzAzLTRlOTQtYWFkYS0
     -d "client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer" \
     -d "client_assertion=$(python3 -c 'from app.routers import fhir; print(fhir.generate_jwt().strip())')"
 
-Compare public and private keys match, bash both things:
+# Compare public and private keys match, bash both things:
 openssl rsa -noout -modulus -in private_key.pem | openssl md5
 openssl x509 -noout -modulus -in public_key_cert.pem | openssl md5
 
 
-🔹 Generated JWT: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3ODJlMzQ3MS0wNzAzLTRlOTQtYWFkYS01ZDgzYWFkYTZjNTIiLCJzdWIiOiI3ODJlMzQ3MS0wNzAzLTRlOTQtYWFkYS01ZDgzYWFkYTZjNTIiLCJhdWQiOiJodHRwczovL2ZoaXIuZXBpYy5jb20vaW50ZXJjb25uZWN0LWZoaXItb2F1dGgvb2F1dGgyL3Rva2VuIiwianRpIjoiYTU2MGU0MTMtYzUzNS00NTNhLThjNDEtMzg1MTQ5ODNjNWQ0IiwiZXhwIjoxNzQxMTc4OTAzLCJpYXQiOjE3NDExNzg2MDMsIm5iZiI6MTc0MTE3ODYwM30.ivicrswxrfD4GU7ckTQFMLzjoa_ubvvsgL5Mw3-NMqtHqXIWtKsyVpGDiFnQ43IwARsM02T1Ie4il58rfQx-QBrdTT4TqJbt9BuVT2fRcFgGLCZdVViJBDook1mWX1KWCbFq9gytEPYJPxdfM_HYDNNKytoAvWazqbv-f4sUz6K7CWF-c_OekyjSWBrfS7jwssOsunZ6AOWbJAaNMaCeSQsOhdDEIexmILQfHFshT4Wca1CZ9Zgq0VWYxz4Ml_BuQemaevbmjYRWP873n36MJJgP83FBsYiQxGKnCdvRjYpUkG7V-7s0wHG003d7VtWE9-J9-GTZwP9jVt3KUpzmGA
-eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3ODJlMzQ3MS0wNzAzLTRlOTQtYWFkYS01ZDgzYWFkYTZjNTIiLCJzdWIiOiI3ODJlMzQ3MS0wNzAzLTRlOTQtYWFkYS01ZDgzYWFkYTZjNTIiLCJhdWQiOiJodHRwczovL2ZoaXIuZXBpYy5jb20vaW50ZXJjb25uZWN0LWZoaXItb2F1dGgvb2F1dGgyL3Rva2VuIiwianRpIjoiYTU2MGU0MTMtYzUzNS00NTNhLThjNDEtMzg1MTQ5ODNjNWQ0IiwiZXhwIjoxNzQxMTc4OTAzLCJpYXQiOjE3NDExNzg2MDMsIm5iZiI6MTc0MTE3ODYwM30.ivicrswxrfD4GU7ckTQFMLzjoa_ubvvsgL5Mw3-NMqtHqXIWtKsyVpGDiFnQ43IwARsM02T1Ie4il58rfQx-QBrdTT4TqJbt9BuVT2fRcFgGLCZdVViJBDook1mWX1KWCbFq9gytEPYJPxdfM_HYDNNKytoAvWazqbv-f4sUz6K7CWF-c_OekyjSWBrfS7jwssOsunZ6AOWbJAaNMaCeSQsOhdDEIexmILQfHFshT4Wca1CZ9Zgq0VWYxz4Ml_BuQemaevbmjYRWP873n36MJJgP83FBsYiQxGKnCdvRjYpUkG7V-7s0wHG003d7VtWE9-J9-GTZwP9jVt3KUpzmGA
+# Working
 
-Test to ensure backup is pushed, delete this line after 3/7/25
+# Checking Database
+psql "postgresql://neondb_owner:npg_n6q9MyOcXUDi@ep-dawn-heart-a5xge8c0-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+\dt
+SELECT * FROM fax_files;
 
-Start NGROK
-ngrok http --domain=veritasone.ngrok.app 8000
-
-Refresh Database URL in the shell each time you start the terminal
-echo $DATABASE_URL
+# NeonDB Host Name:
+ep-dawn-heart-a5xge8c0-pooler.us-east-2.aws.neon.tech

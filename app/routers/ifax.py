@@ -1,73 +1,105 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File, Form
-import os
-import shutil
-import logging
-from sqlalchemy.orm import Session
-from app.database.db import SessionLocal, FaxFile
-from app.utils.ocr import extract_text_from_pdf
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Request
+from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
+import os
+import asyncio
+import logging
+from app.database import get_db
+from app.models.fax_file import FaxFile
+from app.utils.ocr import extract_text_from_pdf
+from app.services.ifax_service import download_fax
+from pydantic import BaseModel, Field
+from typing import Optional
+import json
 
-# Define FastAPI router
-router = APIRouter(prefix="/ifax", tags=["iFax Integration"])
-
+router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Database dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+class FaxWebhookPayload(BaseModel):
+    jobId: int                     # Accept as int.
+    transactionId: int             # Now required
+    fromNumber: str
+    toNumber: str
+    faxCallLength: int
+    faxCallStart: int              # Unix timestamp.
+    faxCallEnd: int                # Unix timestamp.
+    faxTotalPages: int
+    faxTransferredPages: int = Field(..., alias="faxReceivedPages")
+    faxStatus: str
+    message: str
+    code: int
+    direction: Optional[str] = None
+
+    class Config:
+        extra = "allow"  # Allow additional keys
 
 @router.post("/receive")
 async def receive_fax(
-    job_id: str = Form(...),
-    transaction_id: str = Form(...),
-    sender: str = Form(None),
-    receiver: str = Form(None),
-    received_time: str = Form(...),
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db),
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db)
 ):
-    """
-    Webhook endpoint for iFax to send received faxes.
-    The fax file is uploaded as part of a multipart request.
-    """
-
-    received_faxes_dir = os.path.join(os.getcwd(), "received_faxes")
-    os.makedirs(received_faxes_dir, exist_ok=True)
-
-    file_path = os.path.join(received_faxes_dir, f"{job_id}.pdf")
-
+    # Log raw request for debugging.
+    raw_body = await request.body()
+    logger.info("Raw request body: %s", raw_body)
     try:
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-        logger.info(f"Saved fax PDF: {file_path}")
+        payload_data = await request.json()
     except Exception as e:
-        logger.error(f"Error saving fax PDF: {e}")
-        raise HTTPException(status_code=500, detail="Failed to save received fax.")
-
-    # Perform OCR
-    raw_text = extract_text_from_pdf(file_path)
-
-    # Store in database
-    fax_entry = FaxFile(
-        job_id=job_id,
-        transaction_id=transaction_id,
-        sender=sender,
-        receiver=receiver,
-        received_time=datetime.strptime(received_time, "%Y-%m-%d %H:%M:%S"),
-        file_path=file_path,
-        raw_text=raw_text,
-    )
-
+        logger.error("Failed to parse JSON: %s", e)
+        raise HTTPException(status_code=400, detail="Invalid JSON payload")
     try:
-        db.add(fax_entry)
-        db.commit()
-        db.refresh(fax_entry)
+        payload = FaxWebhookPayload(**payload_data)
     except Exception as e:
-        logger.error(f"Database error: {e}")
-        raise HTTPException(status_code=500, detail="Database error while saving fax.")
+        logger.error("Payload validation error: %s", e)
+        raise HTTPException(status_code=422, detail="Payload validation error: " + str(e))
+    logger.info("Parsed payload: %s", payload.json())
+    try:
+        # Save metadata to the database.
+        fax = FaxFile(
+            job_id=str(payload.jobId),
+            transaction_id=str(payload.transactionId),  # Always include transactionId
+            sender=payload.fromNumber,
+            receiver=payload.toNumber,
+            received_time=datetime.utcfromtimestamp(payload.faxCallStart),
+            file_path="",
+            pdf_data=b"",
+            ocr_text="",
+        )
+        db.add(fax)
+        await db.commit()
+        await db.refresh(fax)
+        # Trigger background task to download and process the fax.
+        background_tasks.add_task(process_fax, str(payload.jobId), fax.id, payload.transactionId, payload.direction)
+        return {"status": "success", "fax_id": fax.id}
+    except Exception as e:
+        logger.exception("Failed to process fax webhook")
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
-    return {"message": "Fax received and stored", "job_id": job_id, "file_path": file_path}
+async def process_fax(job_id: str, fax_record_id: int, transaction_id: int, direction: Optional[str] = None):
+    """
+    Background task that downloads the fax using the API,
+    runs OCR, and updates the DB record.
+    """
+    try:
+        from app.database.db import SessionLocal
+        async with SessionLocal() as db:
+            download_result = await asyncio.to_thread(download_fax, job_id, transaction_id, direction)
+            if "error" in download_result:
+                raise Exception(download_result.get("error"))
+            file_path = download_result.get("file_path")
+            if not file_path or not os.path.exists(file_path):
+                raise Exception("Downloaded file not found")
+            logger.info(f"Downloaded fax file from iFax: {file_path}")
+            ocr_text = extract_text_from_pdf(file_path)
+            logger.info("OCR processing complete.")
+            with open(file_path, "rb") as f:
+                pdf_content = f.read()
+            fax = await db.get(FaxFile, fax_record_id)
+            if fax:
+                fax.file_path = os.path.abspath(file_path)
+                fax.pdf_data = pdf_content
+                fax.ocr_text = ocr_text
+                await db.commit()
+    except Exception as e:
+        logger.exception("Failed to process fax download in background: %s", str(e))

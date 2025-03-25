@@ -1,64 +1,65 @@
+import asyncio
+import ssl
+import certifi  # Provides Mozilla's trusted CA bundle
 from logging.config import fileConfig
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import pool
 from alembic import context
-import asyncio
-import os
 
-# Alembic Config object for reading values from .ini file
+# Import Base from your db.py to capture all your model metadata.
+from app.database.db import Base
+
+target_metadata = Base.metadata
+
+# Alembic configuration: load settings from alembic.ini.
 config = context.config
-
-# Interpret the config file for Python logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Load database URL from Alembic config
+# Create an SSL context using certifi's CA bundle.
+ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+# Load the database connection URL from alembic.ini (ensure it does not include '?sslmode=require').
 DATABASE_URL = config.get_main_option("sqlalchemy.url")
 
-# Ensure that metadata is correctly set for migrations
-target_metadata = None  # Update if using models
+# Create the asynchronous engine with proper SSL handling.
+connectable = create_async_engine(
+    DATABASE_URL,
+    poolclass=pool.NullPool,
+    connect_args={"ssl": ssl_context},
+)
 
-def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
 
-    This configures the context with just a URL
-    and does not create an Engine. Calls to `context.execute()`
-    here emit the SQL directly to the output.
-
+def do_run_migrations(connection):
     """
-    context.configure(
-        url=DATABASE_URL,
-        target_metadata=target_metadata,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
-    )
-
+    Synchronously run migrations using the given connection.
+    This function configures the Alembic context with the target metadata
+    and then runs the migrations within a transaction.
+    """
+    context.configure(connection=connection, target_metadata=target_metadata)
     with context.begin_transaction():
         context.run_migrations()
 
+
 async def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    This will create an async database engine and execute migrations.
     """
-    # Create an async engine with SSL enabled
-    connectable = create_async_engine(
-        DATABASE_URL,
-        connect_args={"ssl": "require"}  # Explicitly require SSL for NeonDB
-    )
+    Run migrations asynchronously using the async engine.
 
+    This function acquires an asynchronous connection from the engine and then
+    calls the synchronous migration runner (do_run_migrations) via run_sync.
+    """
     async with connectable.connect() as connection:
-        await connection.run_sync(
-            lambda conn: context.configure(
-                connection=conn, target_metadata=target_metadata
-            )
-        )
-        await connection.run_sync(context.run_migrations)
+        await connection.run_sync(do_run_migrations)
 
-# Determine whether to run in offline or online mode
+
 if context.is_offline_mode():
-    run_migrations_offline()
+    # Offline mode: generate SQL scripts without a live connection.
+    context.configure(url=DATABASE_URL, literal_binds=True, target_metadata=target_metadata)
+    with context.begin_transaction():
+        context.run_migrations()
 else:
-    # Use existing event loop to run async migrations
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run_migrations_online())
+    # Online mode: run migrations asynchronously.
+    asyncio.run(run_migrations_online())
+
+    # Debug Assist:
+    print(f"Running migration against: {config.get_main_option('sqlalchemy.url')}")

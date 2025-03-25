@@ -5,13 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/database/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/models/fax_file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/testing_scripts/import_db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BTG_Instructions" beforeDir="false" afterPath="$PROJECT_DIR$/BTG_Instructions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/streamlit_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic.ini" beforeDir="false" afterPath="$PROJECT_DIR$/alembic.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/database/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routers/ifax.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routers/ifax.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/ifax_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/ifax_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/ocr.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/ocr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/received_faxes/123456.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/received_faxes/123456.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,11 +37,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/test_db.py" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2tZ2aXDaKTPrDiJK0SLCYnQqMNi" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -41,6 +55,7 @@
   &quot;keyToString&quot;: {
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;Python.fhir.executor&quot;: &quot;Run&quot;,
+    &quot;Python.import_db.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
@@ -97,7 +112,12 @@
       <workItem from="1741452598155" duration="28787000" />
       <workItem from="1741656572375" duration="2662000" />
       <workItem from="1741743698462" duration="3058000" />
-      <workItem from="1741933122784" duration="5979000" />
+      <workItem from="1741933122784" duration="15602000" />
+      <workItem from="1742514182790" duration="2857000" />
+      <workItem from="1742595524569" duration="652000" />
+      <workItem from="1742596427540" duration="7943000" />
+      <workItem from="1742607791420" duration="8791000" />
+      <workItem from="1742687465260" duration="29635000" />
     </task>
     <servers />
   </component>
@@ -106,8 +126,10 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
+    <option featureType="com.intellij.fileTypeFactory" implementationName=".envrc" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Veritas_One$import_db.coverage" NAME="import_db Coverage Results" MODIFIED="1742606498457" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/testing_scripts" />
     <SUITE FILE_PATH="coverage/Veritas_One$fhir.coverage" NAME="fhir Coverage Results" MODIFIED="1741324193518" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/routers" />
   </component>
 </project>
