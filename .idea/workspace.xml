@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/database/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/models/fax_file.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_scripts/import_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BTG_Instructions" beforeDir="false" afterPath="$PROJECT_DIR$/BTG_Instructions" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/streamlit_app.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alembic.ini" beforeDir="false" afterPath="$PROJECT_DIR$/alembic.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routers/ifax.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routers/ifax.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/ifax_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/ifax_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/ocr.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/ocr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/received_faxes/123456.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/received_faxes/123456.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +103,8 @@
       <workItem from="1742595524569" duration="652000" />
       <workItem from="1742596427540" duration="7943000" />
       <workItem from="1742607791420" duration="8791000" />
-      <workItem from="1742687465260" duration="29635000" />
+      <workItem from="1742687465260" duration="30316000" />
+      <workItem from="1742937614866" duration="341000" />
     </task>
     <servers />
   </component>
