@@ -7,28 +7,34 @@ import os
 import logging
 from fastapi import FastAPI
 
-# Configure logging
+# 1) Import your routers
+#    Make sure "patient.py" is inside "app/routers", containing "router = APIRouter()"
+from app.routers import ifax, patient
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Validate that required environment variables are set
+# Validate required environment variables
 IFAX_ACCESS_TOKEN = os.getenv("IFAX_ACCESS_TOKEN")
 if not IFAX_ACCESS_TOKEN:
-    logger.error("❌ ERROR: IFAX_ACCESS_TOKEN is missing. Set IFAX_ACCESS_TOKEN in your .env file.")
+    logger.error("❌ ERROR: IFAX_ACCESS_TOKEN is missing. Set it in your .env file.")
     raise Exception("Missing IFAX_ACCESS_TOKEN in environment variables.")
 
-# Import routers only after environment variables are loaded
-from app.routers import fax, ifax
-
-# Initialize FastAPI app
+# 2) Initialize FastAPI
 app = FastAPI()
 
-# Include routers with desired prefixes.
-# Ensure that in app/routers/ifax.py, the route is defined as "@router.post('/receive')"
-app.include_router(fax.router, prefix="/fax")
+# 3) Include existing routers (e.g., iFax)
 app.include_router(ifax.router, prefix="/ifax")
 
-# Health-check endpoint
+# 4) Include the patient router
+#    The 'router' object must be defined in "app/routers/patient.py"
+app.include_router(
+    patient.router,   # <--- from "app/routers/patient"
+    prefix="/patient",
+    tags=["Patient"]
+)
+
+# Simple health-check endpoint
 @app.get("/")
 async def read_root():
     return {"message": "Veritas One API is running"}
