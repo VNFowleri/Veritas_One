@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="Updated vercel env variable with correct backed URL wtih HTTPS instead of HTTP" />
+    <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="Updated CORS with vercel app URL along with veritasone.net" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -125,7 +125,7 @@
       <workItem from="1743011679598" duration="11357000" />
       <workItem from="1743110201338" duration="650000" />
       <workItem from="1743183293806" duration="2263000" />
-      <workItem from="1743281667793" duration="13140000" />
+      <workItem from="1743281667793" duration="13468000" />
     </task>
     <task id="LOCAL-00001" summary="Beta User Registration backend">
       <option name="closed" value="true" />
@@ -183,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743691075935</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Updated CORS with vercel app URL along with veritasone.net">
+      <option name="closed" value="true" />
+      <created>1743691286111</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1743691286111</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,7 +207,8 @@
     <MESSAGE value="Fix: add pdf2image and poppler for OCR support" />
     <MESSAGE value="Trying to synchronize API URL because callin /signup/singup" />
     <MESSAGE value="Updated vercel env variable with correct backed URL wtih HTTPS instead of HTTP" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated vercel env variable with correct backed URL wtih HTTPS instead of HTTP" />
+    <MESSAGE value="Updated CORS with vercel app URL along with veritasone.net" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated CORS with vercel app URL along with veritasone.net" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -208,6 +217,11 @@
           <url>file://$PROJECT_DIR$/app/routers/beta_signup.py</url>
           <line>28</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/main.py</url>
+          <line>28</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
