@@ -8,6 +8,7 @@ from alembic import context
 
 # Import Base from your db.py to capture all your model metadata.
 from app.database.db import Base
+from app import models
 
 target_metadata = Base.metadata
 
