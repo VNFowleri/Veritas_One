@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="Fix: add pdf2image and poppler for OCR support">
+    <list default="true" id="2eb363f3-3c0c-48c4-b98b-b940ce45d5d8" name="Changes" comment="Trying to synchronize API URL because callin /signup/singup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +127,7 @@
       <workItem from="1743011679598" duration="11357000" />
       <workItem from="1743110201338" duration="650000" />
       <workItem from="1743183293806" duration="2263000" />
-      <workItem from="1743281667793" duration="11639000" />
+      <workItem from="1743281667793" duration="12776000" />
     </task>
     <task id="LOCAL-00001" summary="Beta User Registration backend">
       <option name="closed" value="true" />
@@ -169,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743687111233</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Trying to synchronize API URL because callin /signup/singup">
+      <option name="closed" value="true" />
+      <created>1743689839937</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1743689839937</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,7 +191,8 @@
     <MESSAGE value="Beta User Registration backend" />
     <MESSAGE value="downgraded pydantic" />
     <MESSAGE value="Fix: add pdf2image and poppler for OCR support" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: add pdf2image and poppler for OCR support" />
+    <MESSAGE value="Trying to synchronize API URL because callin /signup/singup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Trying to synchronize API URL because callin /signup/singup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
