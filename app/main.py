@@ -27,7 +27,7 @@ app.add_middleware(
     allow_origins=[
         "https://veritasone.net",
         "https://www.veritasone.net",
-        "http://localhost:3000",  # for local dev
+        "https://localhost:3000",  # for local dev
     ],
     allow_credentials=True,
     allow_methods=["*"],
