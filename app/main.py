@@ -24,7 +24,11 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://veritasone.net"],  # Use "*" for local testing
+    allow_origins=[
+        "https://veritasone.net",
+        "https://www.veritasone.net",
+        "http://localhost:3000",  # for local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
