@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, EmailStr
 from datetime import date
 from sqlalchemy.orm import Session
-from app.db import get_db
+
+from app.database.db import get_db
 from app.models import BetaTester
 
 router = APIRouter()
@@ -12,9 +13,8 @@ class BetaTesterCreate(BaseModel):
     name: str
     dob: date
 
-@router.post("/signup")
+@router.post("/")  # Final endpoint = /signup
 def create_beta_tester(tester: BetaTesterCreate, db: Session = Depends(get_db)):
-    # Check if email already exists
     existing = db.query(BetaTester).filter(BetaTester.email == tester.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="You’ve already signed up.")
