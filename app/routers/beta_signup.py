@@ -14,7 +14,7 @@ class BetaTesterCreate(BaseModel):
     dob: date
 
 @router.post("/")  # Final endpoint = /signup
-def create_beta_tester(tester: BetaTesterCreate, db: Session = Depends(get_db)):
+async def create_beta_tester(tester: BetaTesterCreate, db: Session = Depends(get_db)):
     existing = db.query(BetaTester).filter(BetaTester.email == tester.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="You’ve already signed up.")

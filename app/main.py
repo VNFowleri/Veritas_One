@@ -27,7 +27,7 @@ app.add_middleware(
     allow_origins=[
         "https://veritasone.net",
         "https://www.veritasone.net",
-        "https://veritas-one-front-end-html-212s-lvdc6qmuj.vercel.app",  # ✅ <- add this
+        "https://veritas-one-front-end-html-212s-lvdc6qmuj.vercel.app",
         "http://localhost:3000",
         "https://localhost:3000",
     ],
@@ -44,6 +44,10 @@ app.include_router(beta_signup.router, prefix="/signup", tags=["Signup"])
 @app.get("/")
 async def read_root():
     return {"message": "Veritas One API is running"}
+
+@app.options("/test-cors")
+async def options_test():
+    return {"message": "CORS preflight succeeded"}
 
 if __name__ == "__main__":
     import uvicorn
