@@ -27,7 +27,9 @@ app.add_middleware(
     allow_origins=[
         "https://veritasone.net",
         "https://www.veritasone.net",
-        "https://localhost:3000",  # for local dev
+        "https://veritas-one-front-end-html-212s-lvdc6qmuj.vercel.app",  # ✅ <- add this
+        "http://localhost:3000",
+        "https://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
